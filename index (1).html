@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>*{margin:0;padding:0;box-sizing:border-box}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Camera di risonanza</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600&family=Archivo+Black&family=Big+Shoulders+Display:wght@900&family=Bungee&family=Courier+Prime:wght@400;700&family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;600&family=Rubik+Mono+One&family=Special+Elite&family=VT323&display=swap">
+<style>
+/* Layout: una bacheca nera su cui convivono i due mondi — il foglio fotocopiato con lo scotch (Sonic Fiction) e la finestra di Windows (Glitch Generation). Al centro, il testo della proposta generale su un foglio xerox. */
+:root{
+  --board:#0d0d0c;
+  --paper:#e9e6dc;
+  --paper-2:#d8d4c6;
+  --ink:#111110;
+  --riso:#ff3b2f;
+  --tape:rgba(240,232,190,.72);
+  --bsod:#0b23b8;
+  --chrome:#c4c4c4;--chrome-hi:#fff;--chrome-lo:#808080;--title:#000080;
+  --c:#20e3ff;--r:#ff2b62;
+  --dim:#8f8c83;
+  --f-display:"Anton","Archivo Black",Impact,sans-serif;
+  --f-type:"Special Elite","Courier Prime","Courier New",monospace;
+  --f-mono:"Courier Prime","Courier New",monospace;
+  --f-glitch:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --f-term:"VT323","Courier New",monospace;
+  --f-plex:"IBM Plex Mono","Courier New",monospace;
+  color-scheme:dark;
+}
+body{background:var(--board);color:var(--paper);font-family:var(--f-mono);min-height:100%}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.16;mix-blend-mode:screen;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.2 -.4'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.wrap{max-width:1120px;margin:0 auto;padding-block:clamp(40px,7vw,80px) 72px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:clamp(36px,6vw,64px)}
+
+/* testa */
+.top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-family:var(--f-type);font-size:.95rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.top .red{background:var(--riso);color:var(--ink);padding:.1em .45em;transform:rotate(-1.5deg);display:inline-block}
+.hero{font-family:"Archivo","Helvetica Neue",Arial,sans-serif;font-weight:500;font-size:clamp(2.8rem,8.5vw,6.6rem);line-height:1;letter-spacing:-.03em;color:var(--paper);text-wrap:balance}
+.hero .word{display:inline-block;white-space:nowrap}
+.hero .sp{display:inline-block;width:.32em}
+.hero .ch{display:inline-block;padding:.02em .07em;margin:.03em .012em;line-height:1}
+.hero .gl{font-family:var(--f-glitch);font-weight:900;text-transform:uppercase;text-shadow:-3px 0 var(--r),3px 0 var(--c);letter-spacing:-.01em}
+
+/* foglio con il testo */
+.sheet{background:var(--paper);color:var(--ink);padding:clamp(28px,4vw,46px) clamp(22px,4vw,48px);position:relative;transform:rotate(-.6deg);
+  box-shadow:inset 0 0 90px rgba(0,0,0,.25),10px 12px 0 rgba(0,0,0,.6);max-width:860px}
+.sheet .tape{top:-14px}
+.sheet .tape.l{left:8%;transform:rotate(-6deg)}
+.sheet .tape.r{right:8%;transform:rotate(5deg)}
+.sheet h2{font-family:var(--f-mono);font-weight:700;font-size:.85rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px}
+.sheet h2 span{background:var(--ink);color:var(--paper);padding:3px 8px}
+.sheet p{font-family:var(--f-type);font-size:clamp(1.02rem,1.6vw,1.18rem);line-height:1.62;max-width:66ch}
+.sheet p + p{margin-top:1em}
+.sheet mark{background:var(--riso);color:var(--ink);padding:0 .2em}
+.tape{position:absolute;width:130px;height:30px;background:var(--tape);box-shadow:0 1px 2px rgba(0,0,0,.2);z-index:3;
+  clip-path:polygon(3% 0,97% 4%,100% 50%,96% 100%,2% 96%,0 45%)}
+
+.scopo{font-family:var(--f-display);text-transform:uppercase;font-size:clamp(1.8rem,4.4vw,3.4rem);line-height:1;text-wrap:balance}
+.scopo em{font-style:normal;color:var(--riso)}
+
+/* le due porte */
+.doors{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,56px);align-items:start}
+.doors > *{min-width:0}
+.door{display:block;text-decoration:none;color:inherit;transition:transform .18s steps(3)}
+.door:focus-visible{outline:3px dashed var(--riso);outline-offset:8px}
+
+/* porta 1 — foglio strappato */
+.zine{background:var(--paper);color:var(--ink);padding:42px 28px 30px;position:relative;transform:rotate(-2.2deg);
+  box-shadow:inset 0 0 80px rgba(0,0,0,.28),8px 10px 0 rgba(0,0,0,.6);
+  clip-path:polygon(0 2%,6% 0,13% 3%,22% 0,31% 2%,40% 0,52% 3%,61% 0,72% 2%,83% 0,92% 3%,100% 1%,99% 22%,100% 48%,98% 73%,100% 98%,90% 100%,79% 97%,67% 100%,55% 97%,44% 100%,33% 97%,21% 100%,10% 97%,0 100%,1% 74%,0 50%,2% 25%)}
+.door-1{position:relative}
+.door-1 .tape{top:-8px;left:50%;margin-left:-65px;transform:rotate(-3deg);z-index:4}
+.door-1:hover{transform:rotate(1deg) translateY(-4px)}
+.zine .kicker{font-family:var(--f-type);font-size:.9rem;letter-spacing:.14em;text-transform:uppercase}
+.zine .ttl{font-size:clamp(2.2rem,4.6vw,3.6rem);line-height:1;margin:14px 0 12px}
+.zine .desc{font-family:var(--f-type);font-size:1rem;line-height:1.5}
+.zine .go{display:inline-block;margin-top:16px;font-family:var(--f-display);text-transform:uppercase;font-size:1.3rem;background:var(--ink);color:var(--paper);padding:4px 12px;transform:rotate(-1deg)}
+.door-1:hover .go{background:var(--riso);color:var(--ink)}
+.dots{position:absolute;right:-30px;bottom:-30px;width:150px;height:150px;border-radius:50%;opacity:.85;
+  background-image:radial-gradient(var(--riso) 34%,transparent 36%);background-size:8px 8px;pointer-events:none}
+
+/* porta 2 — finestra */
+.win{background:var(--chrome);color:#000;border:2px solid;border-color:var(--chrome-hi) var(--chrome-lo) var(--chrome-lo) var(--chrome-hi);box-shadow:1px 1px 0 #000,8px 10px 0 rgba(0,0,0,.6);transform:rotate(1.4deg)}
+.door-2:hover{transform:translateY(-4px) rotate(-1deg)}
+.win-bar{background:linear-gradient(90deg,var(--title),#1084d0);color:#fff;font-family:var(--f-term);font-size:1.3rem;padding:2px 4px 2px 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.win-x{display:flex;gap:3px}
+.win-x span{width:20px;height:18px;background:var(--chrome);color:#000;font-size:1rem;line-height:16px;text-align:center;border:2px solid;border-color:var(--chrome-hi) var(--chrome-lo) var(--chrome-lo) var(--chrome-hi)}
+.screen{margin:12px;background:var(--bsod);color:#eef2ff;padding:26px 22px;position:relative;overflow:hidden;border:2px solid;border-color:var(--chrome-lo) var(--chrome-hi) var(--chrome-hi) var(--chrome-lo)}
+.screen::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.25) 0 1px,transparent 1px 3px)}
+.screen .face{font-family:var(--f-plex);font-size:2.6rem;line-height:1}
+.screen .ttl{font-family:var(--f-glitch);font-weight:900;text-transform:uppercase;font-size:clamp(2.4rem,5vw,3.9rem);line-height:.85;margin:12px 0;text-shadow:-3px 0 var(--r),3px 0 var(--c)}
+.door-2:hover .screen .ttl{animation:jit .3s steps(2) infinite}
+@keyframes jit{50%{transform:translateX(4px);text-shadow:6px 0 var(--r),-5px 0 var(--c)}}
+.screen .desc{font-family:var(--f-plex);font-size:.95rem;line-height:1.5}
+.win-btns{display:flex;justify-content:flex-end;gap:10px;padding:0 12px 12px}
+.win-btns span{font-family:var(--f-plex);font-size:.85rem;padding:5px 18px;border:2px solid;border-color:var(--chrome-hi) #000 #000 var(--chrome-hi);background:var(--chrome)}
+.win-btns span:first-child{outline:1px dotted #000;outline-offset:-5px}
+.door-2:hover .win-btns span:first-child{border-color:#000 var(--chrome-hi) var(--chrome-hi) #000}
+
+.foot{font-family:var(--f-type);font-size:.9rem;color:var(--dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;border-top:1px dashed #3a3935;padding-top:16px}
+
+@media (max-width:760px){.doors{grid-template-columns:1fr}.dots{width:110px;height:110px}}
+@media (prefers-reduced-motion:reduce){.door,.door-2:hover .screen .ttl{transition:none;animation:none}}
+</style>
+
+<div class="wrap">
+  <div class="top"><span class="red">Proposta generale</span><span>MACRO · Roma · due rassegne</span></div>
+
+  <h1 class="hero">Camera di risonanza</h1>
+
+  <div class="sheet">
+    <span class="tape l"></span><span class="tape r"></span>
+    <h2><span>Il nostro scopo</span></h2>
+    <p>Ripensare lo spazio museale non più come teca di conservazione ma come <mark>camera di risonanza delle tensioni del contemporaneo</mark>. Partendo da questa urgenza, il progetto intende ridefinire i confini della curatela culturale attraverso un format ibrido che fonde editoria radicale, indagine mediale e sperimentazione sonora underground.</p>
+    <p>Rifiutando la rassicurante e monolitica linearità delle presentazioni tradizionali, la rassegna decostruisce i codici della trasmissione del sapere per trasformare il museo in un cantiere performativo. Vogliamo offrire alla cittadinanza un dispositivo di pensiero critico immersivo, in cui la pagina stampata, il gesto giornalistico e il clubbing d'avanguardia si intrecciano per tracciare nuove genealogie estetiche e restituire alla cultura contemporanea la sua forza sovversiva.</p>
+  </div>
+
+  <p class="scopo">Abbiamo <em>due proposte</em> per farlo. Scegline una.</p>
+
+  <div class="doors">
+    <a class="door door-1" href="sonic-fiction.html">
+      <span class="tape"></span>
+      <div class="zine">
+        <span class="dots" aria-hidden="true"></span>
+        <span class="kicker">Proposta 01 · libri × suono</span>
+        <div class="ttl" data-ransom aria-label="Sonic Fiction">Sonic Fiction</div>
+        <p class="desc">Tra Mark Fisher e Kodwo Eshun: la musica come pensiero capace di anticipare i collassi del presente. Quattro incontri tra talk, live electronics, zine e installazioni.</p>
+      </div>
+    </a>
+
+    <a class="door door-2" href="glitch-generation.html">
+      <div class="win">
+        <div class="win-bar"><span>glitch_generation.exe</span><span class="win-x"><span>_</span><span>□</span><span>×</span></span></div>
+        <div class="screen">
+          <div class="face">:(</div>
+          <div class="ttl">Glitch Generation</div>
+          <p class="desc">Proposta 02 · l'errore come metodo. Il vinile che salta, il refuso, il file corrotto, il pianeta al limite: quattro incontri dove il sistema si inceppa.</p>
+        </div>
+        <div class="win-btns"><span>Apri</span><span>Annulla</span></div>
+      </div>
+    </a>
+  </div>
+
+  <div class="foot"><span>Proposta di rassegna per il MACRO · Roma</span><span>2026</span></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<script>
+(function(){
+  function rnd(s){var x=Math.sin(s*999.13)*10000;return x-Math.floor(x)}
+  var fonts=['"Anton",Impact,sans-serif','"Bungee",Impact,sans-serif','"Rubik Mono One",monospace','"DM Serif Display",Georgia,serif','"Archivo Black",sans-serif','"Special Elite",monospace','"Courier Prime",monospace'];
+  function ransom(el,seed,onDark){
+    var looks=onDark?[
+      {bg:'var(--paper)',fg:'var(--ink)'},{bg:'transparent',fg:'var(--paper)'},{bg:'var(--riso)',fg:'var(--ink)'},{bg:'var(--paper-2)',fg:'var(--ink)'},{bg:'transparent',fg:'var(--paper)',border:'2px solid var(--paper)'}
+    ]:[
+      {bg:'var(--ink)',fg:'var(--paper)'},{bg:'var(--paper)',fg:'var(--ink)',border:'2px solid var(--ink)'},{bg:'var(--riso)',fg:'var(--ink)'},{bg:'var(--paper-2)',fg:'var(--ink)'},{bg:'transparent',fg:'var(--ink)'}
+    ];
+    var text=el.textContent.trim();el.textContent='';var i=0;
+    text.split(' ').forEach(function(w,wi){
+      if(wi>0){var s=document.createElement('span');s.className='sp';el.appendChild(s)}
+      var word=document.createElement('span');word.className='word';word.setAttribute('aria-hidden','true');
+      for(var c of w){
+        var r=rnd(i+seed),r2=rnd(i*3+seed+11),r3=rnd(i*7+seed+1),lk=looks[Math.floor(r2*looks.length)];
+        var sp=document.createElement('span');sp.className='ch';sp.textContent=c;
+        sp.style.fontFamily=fonts[Math.floor(r*fonts.length)];sp.style.background=lk.bg;sp.style.color=lk.fg;if(lk.border)sp.style.border=lk.border;
+        sp.style.display='inline-block';sp.style.padding='.02em .08em';sp.style.margin='.03em .015em';sp.style.lineHeight='1';
+        sp.style.transform='rotate('+((r3-.5)*12).toFixed(1)+'deg)';sp.style.fontSize=(0.84+r3*0.28).toFixed(2)+'em';
+        word.appendChild(sp);i++;
+      }
+      el.appendChild(word);
+    });
+  }
+  document.querySelectorAll('[data-ransom]').forEach(function(el,k){ransom(el,20+k*13,false)});
+})();
+</script>
+
+</html>

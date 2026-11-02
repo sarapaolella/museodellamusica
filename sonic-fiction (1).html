@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>*{margin:0;padding:0;box-sizing:border-box}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Sonic Fiction</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Bungee&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Serif+Display:ital@0;1&family=Rubik+Mono+One&family=Special+Elite&display=swap">
+<style>
+/* Layout: ogni slide è una pagina di fanzine fotocopiata — carta xerox, inchiostro nero, un solo colore riso (rosso fluo), nastro adesivo e lettere ritagliate. Il ciclo è impaginato come la tracklist di una cassetta (Lato A / Lato B). */
+:root{
+  --paper:#e9e6dc;      /* carta da fotocopia, appena ingrigita */
+  --paper-2:#d8d4c6;    /* ritaglio più scuro */
+  --ink:#111110;        /* toner */
+  --ink-soft:#3a3935;
+  --riso:#ff3b2f;       /* rosso fluo da risografia */
+  --tape:rgba(240,232,190,.72);
+  --f-display:"Anton","Archivo Black",Impact,"Arial Narrow",sans-serif;
+  --f-type:"Special Elite","Courier Prime","Courier New",monospace;
+  --f-mono:"Courier Prime","Courier New",monospace;
+  --f-serif:"DM Serif Display",Georgia,serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{background:var(--ink);color:var(--ink);overflow:hidden;font-family:var(--f-mono)}
+
+/* grana da fotocopia */
+.grain{position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.22;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.4 -.25'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
+.deck{position:fixed;inset:0}
+.slide{position:absolute;inset:0;display:none;overflow-y:auto;overflow-x:hidden;
+  background:var(--paper);
+  padding-block:max(56px,calc(env(safe-area-inset-top,0px) + 40px)) max(96px,calc(env(safe-area-inset-bottom,0px) + 84px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.slide.active{display:block;animation:xerox .55s steps(4) both}
+.slide.dark{background:var(--ink);color:var(--paper)}
+@keyframes xerox{
+  0%{filter:contrast(3) brightness(1.6);transform:translateX(-6px)}
+  40%{filter:contrast(2) brightness(.7);transform:translateX(4px)}
+  100%{filter:none;transform:none}
+}
+.inner{max-width:1120px;margin:0 auto;position:relative;min-height:100%;display:flex;flex-direction:column;justify-content:center;gap:28px}
+
+/* bordi fotocopia: alone scuro ai margini */
+.slide:not(.dark)::before{content:"";position:fixed;inset:0;pointer-events:none;
+  box-shadow:inset 0 0 120px rgba(0,0,0,.28),inset 0 0 18px rgba(0,0,0,.35)}
+
+/* elementi ricorrenti */
+.tape{position:absolute;width:130px;height:30px;background:var(--tape);box-shadow:0 1px 2px rgba(0,0,0,.15);z-index:3;
+  clip-path:polygon(3% 0,97% 4%,100% 50%,96% 100%,2% 96%,0 45%)}
+.stamp{font-family:var(--f-type);font-size:.85rem;letter-spacing:.12em;text-transform:uppercase}
+.redbar{display:inline-block;background:var(--riso);color:var(--ink);padding:.1em .45em;transform:rotate(-1.2deg)}
+.blk{display:inline-block;background:var(--ink);color:var(--paper);padding:.05em .35em}
+.torn{background:var(--paper-2);position:relative;
+  clip-path:polygon(0 2%,6% 0,13% 3%,22% 0,31% 2%,40% 0,52% 3%,61% 0,72% 2%,83% 0,92% 3%,100% 1%,99% 22%,100% 48%,98% 73%,100% 98%,90% 100%,79% 97%,67% 100%,55% 97%,44% 100%,33% 97%,21% 100%,10% 97%,0 100%,1% 74%,0 50%,2% 25%)}
+.halftone{background-image:radial-gradient(var(--ink) 30%,transparent 32%);background-size:7px 7px}
+.halftone-red{background-image:radial-gradient(var(--riso) 34%,transparent 36%);background-size:8px 8px}
+
+/* lettere ritagliate */
+.ransom{font-size:clamp(2.6rem,9vw,7.5rem);line-height:1.02;text-wrap:balance}
+.ransom .ch{display:inline-block;padding:.02em .08em;margin:.03em .015em;line-height:1}
+.ransom .sp{display:inline-block;width:.35em}
+.ransom .word{display:inline-block;white-space:nowrap}
+
+/* COVER */
+.s-cover .inner{justify-content:center}
+.cover-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.cover-sub{font-family:var(--f-type);font-size:clamp(1rem,2.2vw,1.35rem);max-width:34ch;line-height:1.45}
+.cover-dots{position:absolute;right:-6%;top:6%;width:min(46vw,420px);aspect-ratio:1;border-radius:50%;opacity:.9;z-index:0}
+.cover-title{position:relative;z-index:2}
+.cover-foot{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;font-family:var(--f-mono);font-size:.95rem}
+.scrawl{font-family:var(--f-type);color:var(--riso);font-size:1.15rem;transform:rotate(-3deg);display:inline-block}
+
+/* MANIFESTO */
+.manifesto{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:start}
+.manifesto > *{min-width:0}
+.big-quote{font-family:var(--f-display);font-size:clamp(2.2rem,5.6vw,4.6rem);line-height:.98;text-transform:uppercase;text-wrap:balance}
+.big-quote em{font-style:normal;color:var(--riso)}
+.typed{font-family:var(--f-type);font-size:clamp(1rem,1.6vw,1.15rem);line-height:1.6;max-width:62ch}
+.typed p + p{margin-top:1em}
+.note-card{padding:34px 28px;transform:rotate(1.3deg);position:relative}
+.note-card .tape{top:-12px;left:30%;transform:rotate(-4deg)}
+.names{display:flex;flex-wrap:wrap;gap:8px}
+.names span{font-family:var(--f-display);font-size:1.4rem;text-transform:uppercase;padding:2px 10px;border:2px solid currentColor}
+
+/* METODO */
+.method-head{font-family:var(--f-display);text-transform:uppercase;font-size:clamp(2.4rem,7vw,6rem);line-height:.92}
+.method-head .strike{position:relative;color:var(--ink-soft)}
+.method-head .strike::after{content:"";position:absolute;left:-4%;right:-4%;top:52%;height:.13em;background:var(--riso);transform:rotate(-2deg)}
+.codes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.code{border:2px solid var(--paper);padding:16px 14px;font-family:var(--f-type);font-size:1rem;line-height:1.35;min-width:0}
+.code b{display:block;font-family:var(--f-display);font-weight:400;font-size:1.7rem;text-transform:uppercase;margin-bottom:6px;color:var(--riso)}
+.dark .typed{color:var(--paper)}
+
+/* TRACKLIST */
+.cassette{border:3px solid var(--ink);padding:22px;position:relative;background:var(--paper)}
+.cassette-label{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;border-bottom:2px dashed var(--ink);padding-bottom:12px;margin-bottom:8px}
+.cassette-label h2{font-family:var(--f-display);font-size:clamp(1.8rem,4vw,2.8rem);text-transform:uppercase;line-height:1}
+.sides{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.side h3{font-family:var(--f-type);font-weight:400;font-size:1rem;letter-spacing:.2em;margin:14px 0 6px}
+.track{display:grid;grid-template-columns:3.2rem 1fr;gap:10px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--ink);cursor:pointer}
+.track:hover .t-name,.track:focus-visible .t-name{background:var(--riso)}
+.track:focus-visible{outline:3px solid var(--riso);outline-offset:2px}
+.t-num{font-family:var(--f-display);font-size:2rem;line-height:1}
+.t-name{font-family:var(--f-display);font-size:clamp(1.3rem,2.6vw,1.9rem);text-transform:uppercase;line-height:1.05;display:inline}
+.t-desc{grid-column:2;font-family:var(--f-type);font-size:.95rem;color:var(--ink-soft);margin-top:4px}
+.reels{display:flex;gap:18px;justify-content:center;margin-top:18px}
+.reel{width:58px;height:58px;border-radius:50%;border:3px solid var(--ink);background:repeating-conic-gradient(var(--ink) 0 12deg,transparent 12deg 60deg);animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* INCONTRO */
+.track-head{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap}
+.track-no{font-family:var(--f-display);font-size:clamp(5rem,15vw,12rem);line-height:.8;color:var(--riso);-webkit-text-stroke:3px var(--ink);paint-order:stroke fill}
+.dark .track-no{-webkit-text-stroke:3px var(--paper)}
+.track-meta{font-family:var(--f-type);font-size:.95rem;letter-spacing:.16em;text-transform:uppercase;padding-bottom:10px}
+.ev-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:34px;align-items:start}
+.ev-grid > *{min-width:0}
+.ev-title{font-family:var(--f-display);font-size:clamp(2.2rem,6vw,5rem);line-height:.95;text-transform:uppercase;text-wrap:balance}
+.ev-title .blk{transform:rotate(-1deg)}
+.dark .ev-title .blk{background:var(--paper);color:var(--ink)}
+.format{display:flex;flex-direction:column;gap:12px}
+.fmt{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;font-family:var(--f-type);font-size:1rem;line-height:1.4}
+.fmt .k{font-family:var(--f-mono);font-weight:700;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:3px 7px;white-space:nowrap}
+.dark .fmt .k{background:var(--riso);color:var(--ink)}
+.guests{padding:26px 22px;transform:rotate(-1.4deg);position:relative;color:var(--ink)}
+.guests .tape{top:-13px;right:18%;transform:rotate(5deg)}
+.guests h4{font-family:var(--f-mono);font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px}
+.guests ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.guests li{font-family:var(--f-serif);font-size:1.35rem;line-height:1.15}
+.guests li small{display:block;font-family:var(--f-type);font-size:.85rem;color:var(--ink-soft)}
+.tbd{font-family:var(--f-type);color:var(--riso);font-size:.95rem;margin-top:10px;transform:rotate(-2deg);display:inline-block}
+.dark .guests{background:var(--paper)}
+
+/* sticker citazione */
+.sticker{display:inline-block;background:var(--riso);color:var(--ink);font-family:var(--f-display);text-transform:uppercase;font-size:clamp(1.2rem,2.6vw,1.8rem);line-height:1.05;padding:14px 18px;transform:rotate(2deg);max-width:22ch;box-shadow:4px 4px 0 var(--ink)}
+.sticker small{display:block;font-family:var(--f-mono);font-size:.75rem;letter-spacing:.12em;margin-top:6px;text-transform:uppercase}
+
+/* waveform */
+.wave{height:54px;width:100%;display:block}
+
+/* CHIUSURA */
+.s-end .inner{justify-content:center;gap:34px}
+.end-line{font-family:var(--f-type);font-size:clamp(1.05rem,2vw,1.35rem);max-width:46ch;line-height:1.5}
+.end-foot{display:flex;flex-wrap:wrap;gap:10px 24px;font-family:var(--f-mono);font-size:.9rem;opacity:.85}
+
+/* NAV */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  pointer-events:none}
+.nav > *{pointer-events:auto}
+.btn{font-family:var(--f-mono);font-weight:700;font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;background:var(--ink);color:var(--paper);border:2px solid var(--paper);padding:9px 14px;cursor:pointer;box-shadow:3px 3px 0 var(--riso)}
+.btn:hover{background:var(--riso);color:var(--ink)}
+.btn:focus-visible{outline:3px solid var(--riso);outline-offset:3px}
+.btn:disabled{opacity:.35;cursor:default;box-shadow:none}
+.counter{font-family:var(--f-type);font-size:.95rem;background:var(--paper);color:var(--ink);padding:6px 10px;border:2px solid var(--ink);font-variant-numeric:tabular-nums;transform:rotate(-2deg)}
+.hint{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));z-index:60;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.on-dark .hint{color:#8d8a80}
+.progress{position:fixed;top:0;left:0;height:5px;background:var(--riso);z-index:61;transition:width .35s steps(6)}
+
+/* RESPONSIVE */
+@media (max-width:860px){
+  .manifesto,.ev-grid,.sides{grid-template-columns:1fr}
+  .codes{grid-template-columns:1fr 1fr}
+  .cover-dots{width:60vw;right:-14%;top:2%}
+  .hint{display:none}
+}
+@media (max-width:440px){
+  .codes{grid-template-columns:1fr}
+  .btn{padding:8px 10px;font-size:.75rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .slide.active{animation:none}
+  .reel{animation:none}
+  .progress{transition:none}
+}
+.home{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:max(16px,env(safe-area-inset-left,0px));z-index:62;font-family:var(--f-mono);font-weight:700;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:5px 10px;text-decoration:none;box-shadow:2px 2px 0 var(--riso)}.home:hover{background:var(--riso);color:var(--ink)}
+</style>
+
+<div class="progress" id="progress"></div>
+<a class="home" href="./">← Indice</a>
+<div class="hint">← → / spazio / swipe</div>
+
+<main class="deck" id="deck">
+
+<!-- 01 COVER -->
+<section class="slide s-cover" data-name="cover">
+  <div class="inner">
+    <div class="cover-dots halftone-red" aria-hidden="true"></div>
+    <div class="cover-top">
+      <span class="stamp blk">Proposta di rassegna · MACRO Roma</span>
+      <span class="stamp">4 incontri · libri × suono</span>
+    </div>
+    <h1 class="ransom cover-title" data-ransom>Sonic Fiction</h1>
+    <p class="cover-sub">Un percorso espositivo e performativo in cui l'ascolto diventa una prassi politica e la pagina stampata la partitura di un collettivo in continuo divenire.</p>
+    <canvas class="wave" data-wave aria-hidden="true"></canvas>
+    <div class="cover-foot">
+      <span class="redbar">Talk · live electronics · zine · installazioni</span>
+      <span class="scrawl">tra Mark Fisher e Kodwo Eshun</span>
+    </div>
+  </div>
+</section>
+
+<!-- 02 MANIFESTO -->
+<section class="slide" data-name="manifesto">
+  <div class="inner">
+    <span class="stamp">// il punto di partenza</span>
+    <div class="manifesto">
+      <div>
+        <p class="big-quote">La musica come forma autonoma di pensiero <em>vischioso</em>, capace di anticipare i collassi e le mutazioni della contemporaneità.</p>
+      </div>
+      <div class="torn note-card">
+        <span class="tape"></span>
+        <div class="typed">
+          <p>Nella terra di confine tra la teoria critica di Mark Fisher e le intuizioni cibernetiche di Kodwo Eshun, Sonic Fiction non si limita ad analizzare la musica come mero oggetto di studio sociologico.</p>
+          <p>In un'epoca satura di flussi digitali effimeri e consumi frammentati, questo percorso espositivo e performativo intende restituire al libro e al suono la loro carica sovversiva originale, riaffermando la dimensione materiale e comunitaria dell'esperienza estetica.</p>
+        </div>
+      </div>
+    </div>
+    <div class="names" aria-label="Riferimenti teorici">
+      <span>Mark Fisher</span><span>Kodwo Eshun</span><span>Kode9</span><span>Grafton Tanner</span><span>Enrico Monacelli</span>
+    </div>
+  </div>
+</section>
+
+<!-- 03 METODO -->
+<section class="slide dark" data-name="metodo">
+  <div class="inner">
+    <span class="stamp" style="color:var(--riso)">// il metodo</span>
+    <h2 class="method-head"><span class="strike">Esercizio frontale</span><br>Interferenza tra codici</h2>
+    <p class="typed">Ciascun incontro è concepito non come un passivo esercizio frontale, ma come un'interferenza tra codici: la parola scritta viene smontata e ricomposta attraverso architetture sonore d'avanguardia. Il museo smette così di configurarsi come contenitore statico di reperti per mutare in un laboratorio acustico e concettuale, dove le traiettorie dell'editoria indipendente – dalle zine autoprodotte ai saggi di contro-informazione – si intrecciano con la storiografia dei movimenti di protesta, la rave culture e la sound art.</p>
+    <div class="codes">
+      <div class="code"><b>Live electronics</b>architetture sonore d'avanguardia</div>
+      <div class="code"><b>Field recording</b>archivi, nastri, tracce dismesse</div>
+      <div class="code"><b>Performative lecture</b>la parola smontata e ricomposta</div>
+      <div class="code"><b>Editoria indipendente</b>zine autoprodotte e saggi di contro-informazione</div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 TRACKLIST -->
+<section class="slide" data-name="ciclo">
+  <div class="inner">
+    <div class="cassette">
+      <div class="cassette-label">
+        <h2>Sonic Fiction — C90</h2>
+        <span class="stamp">4 tracce · 1 ciclo · MACRO</span>
+      </div>
+      <div class="sides">
+        <div class="side">
+          <h3>LATO A · diagnosi</h3>
+          <div class="track" tabindex="0" data-go="4"><span class="t-num">01</span><span><span class="t-name">Deathscape e frequenze fantasma</span></span><span class="t-desc">Apocalisse digitale, rovine urbane, memorie sommerse</span></div>
+          <div class="track" tabindex="0" data-go="5"><span class="t-num">02</span><span><span class="t-name">Segni dell'opposizione</span></span><span class="t-desc">Rave, sound system e culture di protesta</span></div>
+        </div>
+        <div class="side">
+          <h3>LATO B · pratica</h3>
+          <div class="track" tabindex="0" data-go="6"><span class="t-num">03</span><span><span class="t-name">Cartografia pirata</span></span><span class="t-desc">Zine, nastri, autoproduzione come insubordinazione</span></div>
+          <div class="track" tabindex="0" data-go="7"><span class="t-num">04</span><span><span class="t-name">Divinazioni sonore</span></span><span class="t-desc">Listening party collettivo sul suono del futuro</span></div>
+        </div>
+      </div>
+      <div class="reels" aria-hidden="true"><div class="reel"></div><div class="reel"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 TRACCIA 01 -->
+<section class="slide dark" data-name="traccia-01">
+  <div class="inner">
+    <div class="track-head"><span class="track-no">01</span><span class="track-meta">Lato A · apertura del ciclo · dichiarazione d'intenti</span></div>
+    <div class="ev-grid">
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <h2 class="ev-title">Deathscape e <span class="blk">frequenze fantasma</span></h2>
+        <p class="typed">L'evento inaugurale mappa l'impatto dell'apocalisse digitale sul nostro modo di percepire lo spazio e la memoria, prendendo le mosse dall'impianto teorico degli Urban Deathscapes – il rapporto tra media, rovine urbane, spazi di estinzione e memorie sommerse – integrato ai contributi di Mark Fisher, Enrico Monacelli, Grafton Tanner e Kode9. Una dichiarazione d'intenti che traccia il metodo per l'intero ciclo e definisce gli strumenti d'indagine critica degli incontri successivi.</p>
+        <div class="format">
+          <div class="fmt"><span class="k">Talk</span><span>un confronto diretto tra esperti sul concetto di spettralità digitale, affiancato dalla proiezione di archivi visivi dedicati alle rovine e ai paesaggi urbani d'estinzione</span></div>
+          <div class="fmt"><span class="k">Installazione</span><span>visivo-multimediale e site-specific, che trasforma i dati digitali "morti" – archivi rovinati, tracce radio dismesse, flussi video corrotti – in sculture di luce e suono</span></div>
+          <div class="fmt"><span class="k">Live</span><span>una sonorizzazione dal vivo che intreccia estetica dub e ambient lo-fi</span></div>
+        </div>
+      </div>
+      <div class="torn guests">
+        <span class="tape"></span>
+        <h4>Ospiti ideali</h4>
+        <ul>
+          <li>Valerio Mattioli<small>Nero Editions</small></li>
+          <li>Enrico Monacelli<small>o un saggista di teoria dei media</small></li>
+          <li>MAIMAIMAI<small>o sound artist che lavora su archivi, nastri, elettronica dark</small></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 TRACCIA 02 -->
+<section class="slide" data-name="traccia-02">
+  <div class="inner">
+    <div class="track-head"><span class="track-no">02</span><span class="track-meta">Lato A · storia sociale ed editoriale</span></div>
+    <div class="ev-grid">
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <h2 class="ev-title">Segni <span class="blk">dell'opposizione</span></h2>
+        <p class="typed">Focalizzato sulla storia sociale ed editoriale delle culture di protesta giovanili, l'incontro analizza l'epopea del movimento rave e dei sound system come tecniche di opposizione e dissenso.</p>
+        <div class="format">
+          <div class="fmt"><span class="k">Presentazione</span><span>pubblicazioni fotografiche e riviste d'epoca</span></div>
+          <div class="fmt"><span class="k">Panel</span><span>la cultura dei sound system intesa come pratica di ribellione</span></div>
+          <div class="fmt"><span class="k">Climax</span><span>una performance sonora poliritmica in cui le testimonianze orali e gli archivi audio delle free party storiche vengono campionati e manipolati dal vivo su un impianto autocostruito</span></div>
+        </div>
+      </div>
+      <div class="torn guests">
+        <span class="tape"></span>
+        <h4>Ospiti ideali</h4>
+        <ul>
+          <li>Tobia D'Onofrio<small>Rave New World</small></li>
+          <li>Nitrito di Twig</li>
+          <li>Ma l'amor mio non muore<small>rivista di controcultura</small></li>
+        </ul>
+        <span class="tbd">+ altri da definire</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 TRACCIA 03 -->
+<section class="slide dark" data-name="traccia-03">
+  <div class="inner">
+    <div class="track-head"><span class="track-no">03</span><span class="track-meta">Lato B · supporti obsoleti e grafica sotterranea</span></div>
+    <div class="ev-grid">
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <h2 class="ev-title">Cartografia <span class="blk">pirata</span></h2>
+        <p class="typed">Dedicato alla dimensione materiale dei supporti obsoleti e alla grafica editoriale sotterranea, l'appuntamento mappa la galassia delle zine autoindipendenti e delle produzioni autonome su nastro e lo-fi.</p>
+        <div class="format">
+          <div class="fmt"><span class="k">Mostra</span><span>temporanea, ad accesso dinamico</span></div>
+          <div class="fmt"><span class="k">Tavola rotonda</span><span>sull'autoproduzione come atto di insubordinazione ai circuiti distributivi mainstream</span></div>
+          <div class="fmt"><span class="k">Workshop</span><span>di zine o di approccio alla console</span></div>
+          <div class="fmt"><span class="k">Live</span><span>durante il workshop, un live set noise/industrial elabora in tempo reale l'atmosfera</span></div>
+        </div>
+      </div>
+      <div class="torn guests">
+        <span class="tape"></span>
+        <h4>Ospiti ideali</h4>
+        <ul>
+          <li>Fondatori di etichette indipendenti</li>
+          <li>Fanzinari storici</li>
+        </ul>
+        <span class="tbd">nomi da definire</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 TRACCIA 04 -->
+<section class="slide" data-name="traccia-04">
+  <div class="inner">
+    <div class="track-head"><span class="track-no">04</span><span class="track-meta">Lato B · chiusura collettiva</span></div>
+    <div class="ev-grid">
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <h2 class="ev-title">Divinazioni <span class="blk">sonore</span></h2>
+        <p class="typed">Partendo dall'affermazione che Kode9 scrive in Guerre sonore, cioè che nella musica di oggi c'è il futuro di domani, l'appuntamento di chiusura è un momento collettivo in cui ogni partecipante è invitato a portare il disco o il brano che secondo lui è rappresentativo del futuro.</p>
+        <div class="format">
+          <div class="fmt"><span class="k">Listening party</span><span>ascolto collettivo e confronto sulle scelte reciproche</span></div>
+          <div class="fmt"><span class="k">Tavola rotonda</span><span>2-3 esperti commentano il fenomeno da un punto di vista storico (rock e hippie, musica elettronica e postmodernismo)</span></div>
+          <div class="fmt"><span class="k">Stampa</span><span>distribuzione dei prodotti nati nell'incontro precedente, come un minuscolo saggio in tiratura limitata, pensato come guida all'ascolto e diffuso in forma di manifesto</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:30px;align-items:flex-start">
+        <div class="sticker">Porta il disco del futuro<small>istruzioni per il pubblico</small></div>
+        <div class="torn guests">
+          <span class="tape"></span>
+          <h4>Ospiti ideali</h4>
+          <ul>
+            <li>Critici musicali</li>
+            <li>Voci radiofoniche</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 09 CHIUSURA -->
+<section class="slide dark s-end" data-name="fine">
+  <div class="inner">
+    <span class="stamp" style="color:var(--riso)">// lato B, fine nastro</span>
+    <h2 class="ransom" data-ransom>L'ascolto è una prassi politica</h2>
+    <p class="end-line">Sonic Fiction si propone di tracciare un'ipotesi di futuro in cui la pagina stampata diventa la partitura di un collettivo in continuo divenire, capace di interrogare le crepe dell'industria culturale ed evocare nuove forme di indagine e produzione estetica.</p>
+    <canvas class="wave" data-wave data-color="#ff3b2f" aria-hidden="true"></canvas>
+    <div class="end-foot">
+      <span>Sonic Fiction</span><span>Proposta di rassegna per il MACRO</span><span>Roma, 2026</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="nav" aria-label="Navigazione slide">
+  <button class="btn" id="prev" type="button">← Indietro</button>
+  <span class="counter" id="counter">01 / 09</span>
+  <button class="btn" id="next" type="button">Avanti →</button>
+</nav>
+
+<div class="grain" aria-hidden="true"></div>
+
+<script>
+(function(){
+  /* lettere ritagliate: ogni carattere prende font, fondo e rotazione diversi, in modo deterministico */
+  var fonts=['"Anton",Impact,sans-serif','"Bungee",Impact,sans-serif','"Rubik Mono One",monospace','"DM Serif Display",Georgia,serif','"Archivo Black",sans-serif','"Special Elite",monospace','"Courier Prime",monospace'];
+  var looks=[
+    {bg:'var(--ink)',fg:'var(--paper)'},
+    {bg:'var(--paper)',fg:'var(--ink)',border:'2px solid var(--ink)'},
+    {bg:'var(--riso)',fg:'var(--ink)'},
+    {bg:'var(--paper-2)',fg:'var(--ink)'},
+    {bg:'transparent',fg:'inherit'},
+    {bg:'var(--ink)',fg:'var(--riso)'}
+  ];
+  function rnd(seed){var x=Math.sin(seed*999.13)*10000;return x-Math.floor(x)}
+  document.querySelectorAll('[data-ransom]').forEach(function(el,ei){
+    var text=el.textContent.trim();el.setAttribute('aria-label',text);el.textContent='';
+    var i=0;
+    text.split(' ').forEach(function(w,wi){
+      if(wi>0){var s=document.createElement('span');s.className='sp';el.appendChild(s)}
+      var word=document.createElement('span');word.className='word';word.setAttribute('aria-hidden','true');
+      for(var c of w){
+        var r=rnd(i+ei*37+3),r2=rnd(i*3+ei+11),r3=rnd(i*7+ei*5+1);
+        var span=document.createElement('span');span.className='ch';span.textContent=c;
+        var lk=looks[Math.floor(r2*looks.length)];
+        if(el.closest('.dark') && lk.bg==='transparent'){lk={bg:'transparent',fg:'var(--paper)'}}
+        span.style.fontFamily=fonts[Math.floor(r*fonts.length)];
+        span.style.background=lk.bg;span.style.color=lk.fg;if(lk.border)span.style.border=lk.border;
+        span.style.transform='rotate('+((r3-.5)*12).toFixed(1)+'deg) translateY('+((r-.5)*8).toFixed(0)+'px)';
+        span.style.fontSize=(0.82+r3*0.3).toFixed(2)+'em';
+        word.appendChild(span);i++;
+      }
+      el.appendChild(word);
+    });
+  });
+
+  /* forma d'onda disegnata a mano */
+  function drawWaves(){
+    document.querySelectorAll('[data-wave]').forEach(function(cv,k){
+      var w=cv.clientWidth,h=cv.clientHeight;if(!w)return;
+      var dpr=window.devicePixelRatio||1;cv.width=w*dpr;cv.height=h*dpr;
+      var ctx=cv.getContext('2d');ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);
+      var dark=cv.closest('.dark');
+      ctx.fillStyle=cv.dataset.color||(dark?'#e9e6dc':'#111110');
+      var n=Math.floor(w/5);
+      for(var i=0;i<n;i++){
+        var t=i/n,env=Math.sin(t*Math.PI)*0.8+0.2;
+        var a=(Math.abs(Math.sin(i*0.37+k)*Math.cos(i*0.11))*0.8+rnd(i+k*50)*0.35)*env;
+        var bh=Math.max(2,a*h);
+        ctx.fillRect(i*5,(h-bh)/2,3,bh);
+      }
+    });
+  }
+
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var cur=0,total=slides.length;
+  var counter=document.getElementById('counter'),prog=document.getElementById('progress');
+  var prevB=document.getElementById('prev'),nextB=document.getElementById('next');
+  function pad(n){return String(n).padStart(2,'0')}
+  function show(n){
+    n=Math.max(0,Math.min(total-1,n));
+    slides[cur].classList.remove('active');cur=n;
+    var s=slides[cur];s.classList.add('active');s.scrollTop=0;
+    counter.textContent=pad(cur+1)+' / '+pad(total);
+    prog.style.width=((cur+1)/total*100)+'%';
+    prevB.disabled=cur===0;nextB.disabled=cur===total-1;
+    document.body.classList.toggle('on-dark',s.classList.contains('dark'));
+    try{history.replaceState(null,'','#'+s.dataset.name)}catch(e){}
+    requestAnimationFrame(drawWaves);
+  }
+  prevB.addEventListener('click',function(){show(cur-1)});
+  nextB.addEventListener('click',function(){show(cur+1)});
+  document.addEventListener('keydown',function(e){
+    if(e.target.closest&&e.target.closest('.track')&&(e.key==='Enter')){show(+e.target.closest('.track').dataset.go);return}
+    if(['ArrowRight','PageDown',' '].indexOf(e.key)>-1){e.preventDefault();show(cur+1)}
+    else if(['ArrowLeft','PageUp'].indexOf(e.key)>-1){e.preventDefault();show(cur-1)}
+    else if(e.key==='Home'){show(0)}else if(e.key==='End'){show(total-1)}
+  });
+  document.querySelectorAll('.track').forEach(function(t){t.addEventListener('click',function(){show(+t.dataset.go)})});
+  var sx=null,sy=null;
+  document.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(sx===null)return;var dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.4){show(cur+(dx<0?1:-1))}sx=null;
+  },{passive:true});
+  window.addEventListener('resize',drawWaves);
+
+  var start=0,h=location.hash.slice(1);
+  slides.forEach(function(s,i){if(s.dataset.name===h)start=i});
+  show(start);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(drawWaves);
+})();
+</script>
+
+</html>
